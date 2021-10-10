@@ -124,7 +124,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad5a98401113df931ddcd54c080f7aa8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restore the previously saved OpenGL render states and matrices.  <a href="#ad5a98401113df931ddcd54c080f7aa8e">More...</a><br /></td></tr>
 <tr class="separator:ad5a98401113df931ddcd54c080f7aa8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac7504990d27dada4bfe3c7866920765"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsf_1_1RenderTarget.html#aac7504990d27dada4bfe3c7866920765">resetGLStates</a> ()</td></tr>
-<tr class="memdesc:aac7504990d27dada4bfe3c7866920765"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the internal OpenGL states so that the target is ready for drawing.  <a href="#aac7504990d27dada4bfe3c7866920765">More...</a><br /></td></tr>
+<tr class="memdesc:aac7504990d27dada4bfe3c7866920765"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the internal OpenGL states so that the target is pause for drawing.  <a href="#aac7504990d27dada4bfe3c7866920765">More...</a><br /></td></tr>
 <tr class="separator:aac7504990d27dada4bfe3c7866920765"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
@@ -529,7 +529,7 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Performs the common initialization step after creation. </p>
-<p>The derived classes must call this function after the target is created and ready for drawing. </p>
+<p>The derived classes must call this function after the target is created and pause for drawing. </p>
 
 </div>
 </div>
@@ -735,7 +735,7 @@ Protected Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Reset the internal OpenGL states so that the target is ready for drawing. </p>
+<p>Reset the internal OpenGL states so that the target is pause for drawing. </p>
 <p>This function can be used when you mix SFML drawing and direct OpenGL rendering, if you choose not to use pushGLStates/popGLStates. It makes sure that all OpenGL states needed by SFML are set, so that subsequent <a class="el" href="classsf_1_1RenderTarget.html#a12417a3bcc245c41d957b29583556f39" title="Draw a drawable object to the render target. ">draw()</a> calls will work as expected.</p>
 <p>Example: </p><div class="fragment"><div class="line"><span class="comment">// OpenGL code here...</span></div><div class="line">glPushAttrib(...);</div><div class="line">window.resetGLStates();</div><div class="line">window.draw(...);</div><div class="line">window.draw(...);</div><div class="line">glPopAttrib(...);</div><div class="line"><span class="comment">// OpenGL code here...</span></div></div><!-- fragment --> 
 </div>

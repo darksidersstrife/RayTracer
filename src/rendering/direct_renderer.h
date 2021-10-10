@@ -1,0 +1,8 @@
+//
+// Created by vvlla on 10.10.2021.
+//
+
+#ifndef RAYTRACER_DIRECT_RENDERER_H
+#define RAYTRACER_DIRECT_RENDERER_H
+
+#endif //RAYTRACER_DIRECT_RENDERER_H

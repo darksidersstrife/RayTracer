@@ -35,7 +35,7 @@ struct Triangle
     constexpr hit_info hit(const Ray<T, size, alignment>& ray) const
     {
         auto v1 = p2 - p1, v2 = p3 - p1;
-        auto n = cross(v1, v2);
+        auto n = cross(v1, v2).normalize();
         if (n * ray.direction > 0)
             return {-1};
 

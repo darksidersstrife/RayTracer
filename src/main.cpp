@@ -25,7 +25,7 @@ const size_t sample_count = 1;
 const size_t diffuse_sample_count = 1;
 
 const float epsilon = 1e-3f;
-const size_t num_threads = 10;
+const size_t num_threads = 5;
 
 thread_local size_t thread_ray_count = 0;
 
@@ -171,8 +171,9 @@ int main()
 
 	sf::Texture texture;
 	texture.create(width, height);
-	sf::Sprite sprite(texture);
-	std::vector<sf::Color> image(width * height);
+	sf::Sprite             sprite(texture);
+	std::vector<sf::Color> sfml_image(width * height);
+	std::vector<spectral>  spectral_image(width * height);
 
 	Camera camera;
 	float aspect_ratio = (float)width / height;
@@ -185,25 +186,93 @@ int main()
 	sf::Vector2i center(window.getPosition().x + width / 2, window.getPosition().y + height / 2);
 	sf::Mouse::setPosition(center);
 
-	TriangleModel<Triangle<float, 3>> tr;
-	tr.triangles.push_back({{-1.0, 1.0, 1.0}, {2.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 1.0f}});
-	tr.triangles.push_back({{-1.0, 1.0, 2.0},  {0.0f, 1.0f, 2.0f}, {2.0f, 0.0f, 2.0f},});
-	tr.material.d.kd[0] = 1;
-	tr.material.d.kd[1] = 1;
-	tr.material.d.kd[2] = 1;
-    tr.material.s.ks[0] = 0;
-    tr.material.s.ks[1] = 0;
-    tr.material.s.ks[2] = 0;
-
-	PointLight pl;
-	pl.spectral_intensity[0] = 1;
-	pl.spectral_intensity[1] = 0;
-	pl.spectral_intensity[2] = 1;
-	pl.position = {0.0, 1.0, -1.0};
+	TriangleModel<Triangle<float, 3>> lside;
+	lside.triangles.push_back({{-1.0f, 0.0f, 1.0f}, {-1.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 2.0f}});
+	lside.triangles.push_back({{-1.0f, 1.0f, 1.0f}, {-1.0f, 1.0f, 2.0f}, {-1.0f, 0.0f, 2.0f}});
+    lside.material.d.kd[0] = 1;
+    lside.material.d.kd[1] = 0;
+    lside.material.d.kd[2] = 0;
+    lside.material.s.ks[0] = 0;
+    lside.material.s.ks[1] = 0;
+    lside.material.s.ks[2] = 0;
+    
+    TriangleModel<Triangle<float, 3>> rside;
+    rside.triangles.push_back({ {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f},{1.0f, 0.0f, 2.0f}});
+    rside.triangles.push_back({ {1.0f, 1.0f, 2.0f},{1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 2.0f}});
+    rside.material.d.kd[0] = 0;
+    rside.material.d.kd[1] = 1;
+    rside.material.d.kd[2] = 0;
+    rside.material.s.ks[0] = 0;
+    rside.material.s.ks[1] = 0;
+    rside.material.s.ks[2] = 0;
+    
+    TriangleModel<Triangle<float, 3>> bside;
+    bside.triangles.push_back({ {-1.0f, 0.0f, 2.0f},{-1.0f, 1.0f, 2.0f},{1.0f, 0.0f, 2.0f}});
+    bside.triangles.push_back({ {-1.0f, 1.0f, 2.0f},{1.0f, 1.0f, 2.0f},{1.0f, 0.0f, 2.0f}});
+    bside.material.d.kd[0] = 1;
+    bside.material.d.kd[1] = 1;
+    bside.material.d.kd[2] = 1;
+    bside.material.s.ks[0] = 0;
+    bside.material.s.ks[1] = 0;
+    bside.material.s.ks[2] = 0;
+    
+    TriangleModel<Triangle<float, 3>> fside;
+    fside.triangles.push_back({{-1.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 2.0f},  {1.0f, 0.0f, 1.0f}});
+    fside.triangles.push_back({{1.0f, 0.0f, 1.0f},{-1.0f, 0.0f, 2.0f},  {1.0f, 0.0f, 2.0f}});
+    fside.material.d.kd[0] = 1;
+    fside.material.d.kd[1] = 1;
+    fside.material.d.kd[2] = 1;
+    fside.material.s.ks[0] = 0;
+    fside.material.s.ks[1] = 0;
+    fside.material.s.ks[2] = 0;
+    
+    TriangleModel<Triangle<float, 3>> cside;
+    cside.triangles.push_back({{-1.0f, 1.0f, 2.0f}, {-1.0f, 1.0f, 1.0f},  {1.0f, 1.0f, 1.0f}});
+    cside.triangles.push_back({{-1.0f, 1.0f, 2.0f},{1.0f, 1.0f, 1.0f},  {1.0f, 1.0f, 2.0f}});
+    cside.material.d.kd[0] = 1;
+    cside.material.d.kd[1] = 1;
+    cside.material.d.kd[2] = 1;
+    cside.material.s.ks[0] = 0;
+    cside.material.s.ks[1] = 0;
+    cside.material.s.ks[2] = 0;
+    
+    TriangleModel<Triangle<float, 3>> box;
+    box.triangles.push_back({{-0.25f, 0.25f, 1.75f},{0.25f, 0.25f, 1.75f},{0.0f, 0.25f, 1.25f}});
+    box.triangles.push_back({{0.25f, 0.15f, 1.75f},{-0.25f, 0.15f, 1.75f},{0.0f, 0.15f, 1.25f}});
+    box.triangles.push_back({{-0.25f, 0.15f, 1.75f},{0.25f, 0.15f, 1.75f},{0.25f, 0.25f, 1.75f}});
+    box.triangles.push_back({{-0.25f, 0.15f, 1.75f},{0.25f, 0.25f, 1.75f},{-0.25f, 0.25f, 1.75f}});
+    box.triangles.push_back({{0.0f, 0.25f, 1.25f},{-0.25f, 0.15f, 1.75f},{-0.25f, 0.25f, 1.75f}});
+    box.triangles.push_back({{0.0f, 0.15f, 1.25f},{-0.25f, 0.15f, 1.75f},{0.0f, 0.25f, 1.25f}});
+    box.triangles.push_back({{0.25f, 0.15f, 1.75f},{0.0f, 0.25f, 1.25f},{0.25f, 0.25f, 1.75f}});
+    box.triangles.push_back({{0.25f, 0.15f, 1.75f},{0.0f, 0.15f, 1.25f},{0.0f, 0.25f, 1.25f}});
+    box.material.d.kd[0] = 1;
+    box.material.d.kd[1] = 0;
+    box.material.d.kd[2] = 1;
+    box.material.s.ks[0] = 0;
+    box.material.s.ks[1] = 0;
+    box.material.s.ks[2] = 0;
+    
+	PointLight pl1;
+    pl1.spectral_intensity[0] = 1;
+    pl1.spectral_intensity[1] = 1;
+    pl1.spectral_intensity[2] = 1;
+    pl1.position = {0.0, 0.8, 1.8};
+    
+    PointLight pl2;
+    pl2.spectral_intensity[0] = 1.5;
+    pl2.spectral_intensity[1] = 0.5;
+    pl2.spectral_intensity[2] = 0.5;
+    pl2.position = {0.5, 0.4, 1.5};
 
 	Scene<TriangleModel<Triangle<float, 3>>, PointLight> scene;
-	scene.objects.emplace_back(tr);
-	scene.lights.push_back(pl);
+	scene.objects.emplace_back(lside);
+	scene.objects.emplace_back(rside);
+	scene.objects.emplace_back(bside);
+	scene.objects.emplace_back(fside);
+	scene.objects.emplace_back(cside);
+	scene.objects.emplace_back(box);
+	scene.lights.push_back(pl1);
+	scene.lights.push_back(pl2);
 
 
 	window.setActive(false);
@@ -220,7 +289,7 @@ int main()
 
 			std::vector<std::thread> threads;
 			threads.reserve(num_threads);
-			auto l = [&](size_t y_begin, size_t y_end) {
+			auto l = [&, camera](size_t y_begin, size_t y_end) {
 				thread_ray_count = 0;
 				for (size_t y = y_begin; y < y_end; y++)
 				{
@@ -240,8 +309,10 @@ int main()
 						}
 
 						color = color / sample_count;
-
-						image[y * window.getSize().x + x] = sf::Color(255 * sqrt(color[0]), 255 * sqrt(color[1]), 255 * sqrt(color[2]));
+                        //spectral_image[y * window.getSize().x + x] = color;
+                        sfml_image[y * window.getSize().x + x] = sf::Color(255 * pow((color[0]) / (color[0] + 1), 1.0 / 1),
+                                          255 *pow((color[1]) / (color[1] + 1), 1.0 / 1),
+                                          255 * pow((color[2]) / (color[2] + 1), 1.0 / 1));
 					}
 				}
 				ray_count += thread_ray_count;
@@ -254,7 +325,30 @@ int main()
 
 			for (auto& t : threads)
 				t.join();
-			texture.update((sf::Uint8*)image.data());
+			auto comp = [](size_t i) { return [i](const auto& a, const auto& b) {return a[i] < b[i];};};
+			auto minr = std::min_element(spectral_image.begin(), spectral_image.end(), comp(0))->operator[](0);
+			auto maxr = std::max_element(spectral_image.begin(), spectral_image.end(), comp(0))->operator[](0);
+			auto ming = std::min_element(spectral_image.begin(), spectral_image.end(), comp(1))->operator[](1);
+			auto maxg = std::max_element(spectral_image.begin(), spectral_image.end(), comp(1))->operator[](1);
+			auto minb = std::min_element(spectral_image.begin(), spectral_image.end(), comp(2))->operator[](2);
+			auto maxb = std::max_element(spectral_image.begin(), spectral_image.end(), comp(2))->operator[](2);
+//            for(int i = 0; i < sfml_image.size(); ++i) {
+//                sfml_image[i] = sf::Color(255 * pow((spectral_image[i][0] - minr) / (maxr - minr), 1.0 / 3),
+//                                          255 *pow((spectral_image[i][1] - ming) / (maxg - ming), 1.0 / 3),
+//                                          255 * pow((spectral_image[i][2] - minb) / (maxb - minb), 1.0 / 3));
+//            }
+
+            std::vector<sf::Uint8> im(4 * sfml_image.size());
+            for (size_t y = 0; y < window.getSize().y; y++) {
+                for (size_t x = 0; x < window.getSize().x; x++) {
+                    auto i = y * window.getSize().x + x;
+                    im[4*i] = sfml_image[i].r;
+                    im[4*i + 1] = sfml_image[i].g;
+                    im[4*i + 2] = sfml_image[i].b;
+                    im[4*i + 3] = sfml_image[i].a;
+                }
+            }
+            texture.update(im.data());
 
 			window.draw(sprite);
 			window.display();
@@ -278,7 +372,7 @@ int main()
 			if (event.type == sf::Event::Resized)
 			{
 				window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
-				image.resize(event.size.width * event.size.height);
+				sfml_image.resize(event.size.width * event.size.height);
 				texture.create(event.size.width, event.size.height);
 				sprite.setTexture(texture, true);
 				aspect_ratio = (float)event.size.width / event.size.height;

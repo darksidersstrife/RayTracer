@@ -344,7 +344,7 @@ public:
     void popGLStates();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Reset the internal OpenGL states so that the target is ready for drawing
+    /// \brief Reset the internal OpenGL states so that the target is pause for drawing
     ///
     /// This function can be used when you mix SFML drawing
     /// and direct OpenGL rendering, if you choose not to use
@@ -378,7 +378,7 @@ protected:
     /// \brief Performs the common initialization step after creation
     ///
     /// The derived classes must call this function after the
-    /// target is created and ready for drawing.
+    /// target is created and pause for drawing.
     ///
     ////////////////////////////////////////////////////////////
     void initialize();
