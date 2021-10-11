@@ -65,7 +65,7 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Restart the clock
     ///
-    /// This function puts the time counter back to zero.
+    /// This function puts the time task_counter back to zero.
     /// It also returns the time elapsed since the clock was started.
     ///
     /// \return Time elapsed

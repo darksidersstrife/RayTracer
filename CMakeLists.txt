@@ -3,7 +3,7 @@ project(RayTracer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(RayTracer src/main.cpp src/geometry/point.h src/geometry/vector.h src/geometry/point.h src/geometry/arraybase.h src/geometry/ray.h src/scene/camera.h src/scene/scene.h src/geometry/sphere.h src/geometry/triangle.h src/scene/TriangleModel.h src/material/diffuse.h src/material/spectral.h src/material/specular.h src/material/complex.h src/light/point.h src/rendering/render.h src/rendering/direct_renderer.h src/rendering/pixel_renderer.h src/rendering/framebuffer.h)
+add_executable(RayTracer src/main.cpp src/geometry/point.h src/geometry/vector.h src/geometry/point.h src/geometry/arraybase.h src/geometry/ray.h src/rendering/camera.h src/scene/scene.h src/geometry/sphere.h src/geometry/triangle.h src/scene/TriangleModel.h src/material/diffuse.h src/material/spectral.h src/material/specular.h src/material/complex.h src/light/point.h src/rendering/render_pool.h src/rendering/ray_sampler.h src/rendering/framebuffer.h src/rendering/ray_generator.h src/cornell_box.h)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DEBUG_PREFIX "-d")

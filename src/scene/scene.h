@@ -16,12 +16,12 @@ public:
     using T = typename ObjectType::T;
 
     template<typename RayType>
-    auto trace_ray(const RayType& ray, T min)
+    auto trace_ray(const RayType& ray, T min) const
     {
         struct object_hit
         {
             decltype(objects[0].trace_ray(ray, 0)) g_hit;
-            ObjectType* object;
+            const ObjectType* object;
         } o_hit;
         o_hit.g_hit.p.t = -1;
 

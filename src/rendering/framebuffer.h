@@ -8,11 +8,19 @@
 template<typename Element>
 class FrameBuffer {
 
+public:
     FrameBuffer() =default;
     FrameBuffer(size_t x, size_t y) : d{x, y}, storage(x * y) {}
 
+    auto begin() {
+        return storage.begin();
+    }
+    auto end() {
+        return storage.end();
+    }
+
     Element* operator[](size_t i) {
-        return storage[d.x * i];
+        return &storage[d.x * i];
     }
 
     const Element* operator[](size_t i) const{

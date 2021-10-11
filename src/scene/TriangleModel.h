@@ -22,11 +22,11 @@ public:
 
 
     template<typename RayType>
-    auto trace_ray(const RayType& ray, float min)
+    auto trace_ray(const RayType& ray, float min) const
     {
         struct hit_info
         {
-            TriangleType* primitive;
+            const TriangleType* primitive;
             decltype(triangles[0].hit(ray)) p;
         };
 

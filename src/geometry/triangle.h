@@ -21,10 +21,10 @@ struct Triangle
 
     constexpr Triangle() =default;
     constexpr Triangle(const PointType& _p1, const PointType& _p2, const PointType& _p3)
-            : p1(_p1), p2(_p2), p3(_p3), n1(cross(p2 - p1, p3 - p1)) {}
+            : p1(_p1), p2(_p2), p3(_p3), n1(cross(p2 - p1, p3 - p1).normalize()), n2(n1), n3(n1) {}
     constexpr Triangle(const PointType& _p1, const PointType& _p2, const PointType& _p3,
                        const VectorType& _n1, const VectorType& _n2, const VectorType& _n3)
-            : p1(_p1), p2(_p2), p3(_p3), n1(n1), n2(_n2), n3(_n3) {};
+            : p1(_p1), p2(_p2), p3(_p3), n1(_n1), n2(_n2), n3(_n3) {};
 
     struct hit_info
     {
