@@ -31,9 +31,6 @@ const size_t num_threads = 5;
 
 
 
-void update(sf::Texture& texture, std::vector<sf::Uint8>& im) {
-    texture.update(im.data());
-}
 
 int main()
 {
@@ -60,11 +57,13 @@ int main()
 	sf::Vector2i center(window.getPosition().x + width / 2, window.getPosition().y + height / 2);
 	sf::Mouse::setPosition(center);
 
-    float flux = 5e09;
+    float total_intensity = 3.978874e+08;
 	PointLight pl1;
-    pl1.spectral_intensity[0] = 1 * flux;
-    pl1.spectral_intensity[1] = 0.524f * flux;
-    pl1.spectral_intensity[2] =  0.134f * flux;
+    pl1.spectral_intensity[0] = 1;
+    pl1.spectral_intensity[1] = 0.524f;
+    pl1.spectral_intensity[2] =  0.134f;
+    //pl1.spectral_intensity.spectre.normalize();
+    pl1.spectral_intensity.spectre *= total_intensity;
     pl1.position = {278, 548.7, 279.5};
 
 	Scene<TriangleModel<Triangle<float, 3>>, PointLight> scene = load_scene();
@@ -113,7 +112,7 @@ int main()
 			last = now;
 			++frame_num;
 		}
-		std::ofstream f("image.txt");
+		std::ofstream f("../image.txt");
 		f << rtp.image.size().x << '\n' << rtp.image.size().y << '\n';
         for (int i = 0; i < 3; ++i) {
             for (size_t y = 0; y < rtp.image.size().y; ++y) {

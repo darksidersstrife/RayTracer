@@ -88,6 +88,7 @@ const char* tall = "423.0 330.0 247.0\n"
 auto white() {
     complex c;
     c.d.kd = spectral {{0.736, 0.736, 0.737}};
+    //c.d.kd.spectre.normalize();
     c.s.ks = spectral{};
     return c;
 }
@@ -95,6 +96,7 @@ auto white() {
 auto red() {
     complex c;
     c.d.kd = spectral {{0.492, 0.049, 0.051}};
+    //c.d.kd.spectre.normalize();
     c.s.ks = spectral{};
     return c;
 }
@@ -102,6 +104,7 @@ auto red() {
 auto green() {
     complex c;
     c.d.kd = spectral {{0.068, 0.398, 0.086}};
+    //c.d.kd.spectre.normalize();
     c.s.ks = spectral{};
     return c;
 }
